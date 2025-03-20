@@ -7,14 +7,31 @@ CORS(app)  # Allows frontend to communicate with backend
 
 def generate_meows(prompt):
     meow_variants = [
-        "Meow. ", "Meeooow. ", "MEOW! ", "Purr... meow. ", 
-        "Mroww~ ", "Hisss! (just kidding, meow) ", "Meow-meow! "
+        "Meow", "Meeoooow", "MEOW", "Meeeooow", "MeOoooow", 
+        "Mroww", "Myaooow", "Meoow!", "Meeow~", "Mrrreow!"
     ]
+
+    prompt_length = len(prompt)
+    print(f"Received prompt: {prompt} (Length: {prompt_length})")  # Debugging log
+
+    if prompt_length < 10:
+        response = random.choice(meow_variants)
     
-    num_meows = min(10, max(3, len(prompt) // 5))
-    meow_text = "".join(random.choices(meow_variants, k=num_meows))
+    elif prompt_length < 30:
+        meow_count = random.randint(4, 7)  # Always at least 4 meows
+        response = " ".join(random.choices(meow_variants, k=meow_count))
     
-    return {"response": meow_text}
+    else:
+        meow_count = random.randint(8, 12)  # Always at least 8 meows
+        response_type = random.choice(["paragraph", "bullets"])
+        
+        if response_type == "paragraph":
+            response = " ".join(random.choices(meow_variants, k=meow_count))
+        else:
+            response = "\n".join([f"- {random.choice(meow_variants)}" for _ in range(meow_count)])
+
+    print(f"Generated response: {response}")  # Debugging log
+    return {"response": response}
 
 @app.route("/", methods=["GET"])
 def home():

@@ -1,38 +1,19 @@
-/* Chat Toggle Button */
-.chat-toggle {
-  position: fixed;
-  top: 10px;
-  right: 15px;
-  background: #007bff;
-  color: white;
-  padding: 8px 12px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-  border: none;
-  transition: background 0.3s;
-}
-
-.chat-toggle:hover {
-  background: #0056b3;
-}
-
 /* Chat History Sidebar */
 .chat-history {
   position: fixed;
-  left: -260px;
+  left: -260px; /* Keep it hidden initially */
   top: 50px;
   width: 250px;
   height: 100%;
   background: #333;
   color: white;
   padding: 10px;
-  transition: left 0.4s ease-in-out;
+  transition: left 0.4s ease-in-out; /* Smooth animation */
   overflow-y: auto;
 }
 
 .chat-history.show {
-  left: 0;
+  left: 0; /* Slide in */
 }
 
 /* Chat Container */
@@ -42,7 +23,6 @@
   height: 100vh;
   justify-content: space-between;
   background: #f9f9f9;
-  padding-top: 40px; /* Adjust for toggle button */
 }
 
 /* Chat Window */
@@ -52,20 +32,9 @@
   padding: 20px;
   display: flex;
   flex-direction: column;
-  scroll-behavior: smooth; /* Smooth scrolling */
 }
 
-/* Auto-Scroll Effect */
-.chat-window::-webkit-scrollbar {
-  width: 6px;
-}
-
-.chat-window::-webkit-scrollbar-thumb {
-  background-color: #ccc;
-  border-radius: 10px;
-}
-
-/* Message Bubbles */
+/* Message Styling */
 .message {
   max-width: 75%;
   padding: 12px 16px;
@@ -77,7 +46,7 @@
   word-wrap: break-word;
 }
 
-/* User Messages */
+/* User Message */
 .message.user {
   background: #007bff;
   color: white;
@@ -86,7 +55,7 @@
   border-bottom-right-radius: 5px;
 }
 
-/* Bot Messages */
+/* Bot Message */
 .message.bot {
   background: #f1f1f1;
   color: black;
@@ -184,11 +153,11 @@
 
   .chat-history {
     width: 100%;
-    left: -100%;
+    left: -100%; /* Hide completely */
   }
 
   .chat-history.show {
-    left: 0;
+    left: 0; /* Full-screen on mobile */
   }
 
   .chat-window {

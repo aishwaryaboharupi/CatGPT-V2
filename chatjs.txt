@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 import "../styles/Chat.css"; // Ensure this file exists
 
 const Chat = () => {
@@ -6,14 +6,12 @@ const Chat = () => {
   const [input, setInput] = useState("");
   const [darkMode, setDarkMode] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
-  const chatWindowRef = useRef(null); // ✅ Reference for auto-scroll
 
   const sendMessage = async () => {
     if (!input.trim()) return;
 
     const newMessage = { text: input, sender: "user" };
-    setMessages((prevMessages) => [...prevMessages, newMessage]);
-    setInput(""); // ✅ Clears input immediately for better UX
+    setMessages([...messages, newMessage]);
 
     try {
       const response = await fetch("http://127.0.0.1:5000/meow", {
@@ -23,56 +21,37 @@ const Chat = () => {
       });
 
       const data = await response.json();
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { text: data.response, sender: "bot" },
-      ]);
+      setMessages([...messages, newMessage, { text: data.response, sender: "bot" }]);
     } catch (error) {
       console.error("Error:", error);
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { text: "Oops! Something went wrong.", sender: "bot" },
-      ]);
     }
+
+    setInput("");
   };
 
-  // ✅ Pressing Enter sends the message
+  // ✅ **NEW: Add Enter Key Support**
   const handleKeyPress = (event) => {
     if (event.key === "Enter") {
-      event.preventDefault();
+      event.preventDefault(); // Prevents accidental form submission
       sendMessage();
     }
   };
 
-  // ✅ Auto-scrolls to the latest message
-  useEffect(() => {
-    if (chatWindowRef.current) {
-      chatWindowRef.current.scrollTop = chatWindowRef.current.scrollHeight;
-    }
-  }, [messages]);
-
   return (
     <div className={`chat-container ${darkMode ? "dark" : ""}`}>
       <div className="top-bar">
-        <button onClick={() => setHistoryOpen(!historyOpen)} className="toggle-btn">
-          ☰
-        </button>
+        <button onClick={() => setHistoryOpen(!historyOpen)}>☰</button>
         <h2>🐱 CatGPT Chat</h2>
-        <button onClick={() => setDarkMode(!darkMode)} className="toggle-dark">
-          {darkMode ? "☀️" : "🌙"}
-        </button>
+        <button onClick={() => setDarkMode(!darkMode)}>🌙</button>
       </div>
 
       <div className={`chat-history ${historyOpen ? "show" : "hide"}`}>
-        <h3>Chat History</h3>
-        {messages
-          .filter((msg) => msg.sender === "user")
-          .map((msg, i) => (
-            <p key={i}>{msg.text}</p>
-          ))}
+        {messages.map((msg, i) =>
+          msg.sender === "user" ? <p key={i}>{msg.text}</p> : null
+        )}
       </div>
 
-      <div className="chat-window" ref={chatWindowRef}>
+      <div className="chat-window">
         {messages.map((msg, i) => (
           <div key={i} className={`message ${msg.sender}`}>
             {msg.text}
@@ -85,7 +64,7 @@ const Chat = () => {
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          onKeyDown={handleKeyPress} // ✅ Updated for better Enter handling
+          onKeyPress={handleKeyPress} // ✅ NEW: Press Enter to send message
           placeholder="Talk to the cat..."
         />
         <button onClick={sendMessage}>Meow!</button>
